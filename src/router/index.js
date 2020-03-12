@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import FindMovie from '../views/FindMovie.vue'
+import MovieDetail from '../views/MovieDetail.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -17,9 +18,16 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+  }, {
+    path: '/movies/:id/:title',
+    name: 'MovieDetail',
+    component: MovieDetail,
+    meta: {
+      title: '電影詳細內容'
+    }, props: true
   },
   {
-    path: '/find-movie',
+    path: '/movies',
     name: 'FindPage',
     component: FindMovie
   }
