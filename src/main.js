@@ -5,10 +5,14 @@ import store from './store'
 import vuetify from './plugins/vuetify';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-
+// - global functions
+// import { getImageUrl, bgcImg } from '@/assets/js/base'
 Vue.config.productionTip = false
-// --------
+// -------- import global functions
+import { share } from '@/mixins/share.js'
+
 Vue.use(VueAxios, axios)
+Vue.mixin(share)
 new Vue({
   router,
   store,

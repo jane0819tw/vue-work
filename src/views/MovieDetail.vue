@@ -1,5 +1,7 @@
 <template lang="pug">
-    v-card.banner(v-if="movie" :style="bgcImg(movie.backdrop_path)")
+    v-card.banner( v-if="movie")
+      v-sheet.banner-bgc(v-if="movie.backdrop_path" :style="bgcImg(movie.backdrop_path)")
+      v-sheet.banner-bgc(v-else color="rgba(0,0,0,0.9)")
       v-row.banner-row
         .banner-img
           v-img(:src="getImageUrl(movie.poster_path)" width="80%")
@@ -12,43 +14,52 @@
               v-icon(left) mdi-sword
               span {{keyword.name.toUpperCase()}}
 
-        .banner-content
-          h1 {{movie.title}} 
-            span ({{movie.release_date.split("-")[0]}})
-            span {{movie.original_title}}
-            span {{movie.runtime}} 分鐘
-          h3 大意
+        .banner-content(class="white--text")
+          v-card-title.mb-3
+            
+            span.font-weight-black.display-2(class="white--text") {{movie.title}} 
+            span.ma-2.font-weight-light.headline(class="grey--text") ({{movie.release_date.split("-")[0]}})
+            span.ma-2.font-weight-light.title(class="grey--text") {{movie.original_title}}
+            span.ma-2.pa-1.subtitle-2(class="grey") {{movie.runtime}} 分鐘
+          v-card-subtitle.display-1(v-if="movie.overview" class="white--text") 大意
           p {{movie.overview}}
+
+          v-card-subtitle.display-1(v-if="movie.credits.cast.length" class="white--text") 演員表
           v-row
             v-col(cols="3" v-for="cast in movie.credits.cast" :key="cast.id" v-if="cast.profile_path")
-              v-card.cast(class="d-flex" color="rgba(255,255,255,0.5)" flat)
-                .cast-img(:style="bgcImg(cast.profile_path)")
-                v-card-title {{cast.character}}
-                v-card-subtitle {{cast.name}}
-                //- v-img(:src="getImageUrl()")
+              Cast(:cast="cast")
+          h1 {{key}}
+          SimilarMovies(:similarGroup="similarGroup")
+          
 </template>
 <script>
+import Cast from "@/components/Cast.vue";
+import SimilarMovies from "@/components/SimilarMovies.vue";
 export default {
   data() {
     return {
-      movie: null
+      movie: null,
+      key: this.$route.path
     };
+  },
+  components: {
+    SimilarMovies,
+    Cast
+  },
+  computed: {
+    similarGroup() {
+      let results = this.movie.similar.results;
+      let similarGroup = [];
+      while (results.length) {
+        similarGroup.push(results.splice(0, 3));
+      }
+      return similarGroup;
+    }
   },
   created() {
     this.getMovie(this.$route.params.id);
   },
   methods: {
-    getImageUrl(url, width = 185) {
-      return `http://image.tmdb.org/t/p/w${width}/${url}`;
-    },
-    bgcImg(url) {
-      console.log(this.getImageUrl(url, 1280));
-      return {
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-        backgroundImage: `url(${this.getImageUrl(url, 1280)})`
-      };
-    },
     async getMovie(id) {
       console.log(id);
       await this.axios
@@ -74,9 +85,17 @@ export default {
 .banner
   display: flex
   justify-content: center
-  filter: brightness(0.4)
+  position: relative
+
 .banner *
   filter: brightness(1)
+
+.banner-bgc
+  position: absolute
+  width: 100%
+  height: 100%
+  filter: brightness(0.4)
+
 .banner-row
   max-width: 80%
 
@@ -96,4 +115,10 @@ export default {
   flex-direction: column
   align-items: center
   justify-content: center
+
+.v-card__text, .v-card__title
+  word-break: break-word
+
+.carousel-col
+  flex-grow: 0
 </style>

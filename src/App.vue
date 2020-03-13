@@ -2,7 +2,7 @@
   v-app
     Navbar
     
-    router-view
+    router-view(:key="$route.path")
 </template>
 
 <script>
