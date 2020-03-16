@@ -28,7 +28,7 @@
           v-row
             v-col(cols="3" v-for="cast in movie.credits.cast" :key="cast.id" v-if="cast.profile_path")
               Cast(:cast="cast")
-          h1 {{key}}
+          //- h1 {{key}}
           SimilarMovies(:similarGroup="similarGroup")
           
 </template>
