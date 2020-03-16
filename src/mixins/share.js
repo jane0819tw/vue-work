@@ -10,6 +10,9 @@ export const share = {
         backgroundSize: "cover",
         backgroundImage: `url(${this.getImageUrl(url, 1280)})`
       };
+    },
+    getYear(date) {
+      return date.split("-")[0]
     }
   }
 }

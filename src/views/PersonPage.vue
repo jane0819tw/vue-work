@@ -1,32 +1,56 @@
 <template lang="pug">
 v-card.d-flex
-  .person-img.flex-grow-0
+  .person-img.flex-grow-0.ma-4
     v-img(:src="getImageUrl(person.profile_path)")
+    ProfileInfo(:personInfo="person")
+    
   .person-content
     v-card-title {{person.name}}
     v-card-text {{person.biography}}
-    v-card-subtitle 演戲
+    v-card-subtitle 演戲作品
+    v-radio-group(v-model="media_type" row)
+      v-radio(label="電影" value="movie" color="red")
+      v-radio(label="電視劇" value="tv")
     v-list
       v-list-item-group
           v-list-item(v-for="history in historyCasts" :key="history.id" :to="`/movies/${history.id}/${history.title}`")
+            v-list-item-avatar
+              v-img(v-if="history.poster_path" :src="getImageUrl(history.poster_path)")
+              v-img(v-else src="@/assets/black.jpeg")
+
             v-list-item-content
               v-list-item-title 
-                span {{history.media_type}}
                 span(v-if="history.release_date") {{history.release_date.split("-")[0]|| history.release_date}}
-                
-                span {{history.title||history.name}} 
-                span(v-if="history.character") as {{history.character}}
+                v-list-item-icon
+                  v-icon mdi-record-circle
+                span.ml-2 {{history.title||history.name}} 
+                span(v-if="history.character") 
+                  span.grey--text as 
+                  span {{history.character}}
 </template>
 <script>
+import ProfileInfo from "@/components/ProfileInfo.vue";
 export default {
+  components: {
+    ProfileInfo
+  },
   data() {
     return {
-      person: {}
+      person: {},
+      media_type: "movie"
     };
   },
   computed: {
     historyCasts() {
-      return this.person.combined_credits.cast;
+      let media_type_arr = this.person.combined_credits.cast.filter(
+        cast => cast.media_type === this.media_type
+      );
+      if (this.media_type === "movie") {
+        media_type_arr = media_type_arr.sort(
+          (a, b) => new Date(b.release_date) - new Date(a.release_date)
+        );
+      }
+      return media_type_arr;
     }
   },
   created() {
@@ -34,7 +58,6 @@ export default {
   },
   methods: {
     getPerson() {
-      // https://api.themoviedb.org/3/person/{person_id}?api_key=<<api_key>>&language=en-US
       this.axios
         .get(`https://api.themoviedb.org/3/person/${this.$route.params.id}`, {
           params: {
@@ -52,4 +75,6 @@ export default {
 };
 </script>
 <style lang="sass">
+.person-content
+  width: 100%
 </style>
