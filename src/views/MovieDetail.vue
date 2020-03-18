@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-card.banner( v-if="movie")
+    v-card.banner(v-if="movie")
       v-sheet.banner-bgc(v-if="movie.backdrop_path" :style="bgcImg(movie.backdrop_path)")
       v-sheet.banner-bgc(v-else color="rgba(0,0,0,0.9)")
       v-row.banner-row
@@ -9,71 +9,89 @@
             v-chip(class="ma-2" label)(v-for="genre in movie.genres" big :key="genre.id") 
               v-icon mdi-label
               span {{genre.name}}
-          .keywords
+          .keywords(v-if="movie.keywords")
             v-chip(class="ma-2" color="secondary" v-for="keyword in movie.keywords.keywords" big :key="keyword.id")
               v-icon(left) mdi-sword
               span {{keyword.name.toUpperCase()}}
 
         .banner-content(class="white--text")
-          v-card-title.mb-3
-            
-            span.font-weight-black.display-2(class="white--text") {{movie.title}} 
-            span.ma-2.font-weight-light.headline(class="grey--text") ({{movie.release_date.split("-")[0]}})
-            span.ma-2.font-weight-light.title(class="grey--text") {{movie.original_title}}
-            span.ma-2.pa-1.subtitle-2(class="grey") {{movie.runtime}} 分鐘
+          MovieDetailTitle(:movie="movie")
+          Videos(:videos="videos")
           v-card-subtitle.display-1(v-if="movie.overview" class="white--text") 大意
           p {{movie.overview}}
-
-          v-card-subtitle.display-1(v-if="movie.credits.cast.length" class="white--text") 演員表
-          v-row
-            v-col(cols="3" v-for="cast in movie.credits.cast" :key="cast.id" v-if="cast.profile_path")
-              Cast(:cast="cast")
-          //- h1 {{key}}
-          SimilarMovies(:similarGroup="similarGroup")
+          CastList(:media="movie")
+          Similars(:similarGroup="similarGroup")
           
 </template>
 <script>
-import Cast from "@/components/Cast.vue";
-import SimilarMovies from "@/components/SimilarMovies.vue";
+import MovieDetailTitle from "@/components/MovieDetailTitle.vue";
+import Videos from "@/components/Videos.vue";
+import CastList from "@/components/CastList.vue";
+import Similars from "@/components/Similars.vue";
 export default {
+  async mounted() {
+    // this.getMovie(this.$route.params.id);
+    await this.getMovie(this.$route.params.id);
+    await console.log("get movies");
+    await this.getVideo(this.$route.params.id);
+    await console.log("get videos");
+  },
   data() {
     return {
       movie: null,
-      key: this.$route.path
+      key: this.$route.path,
+      videos: []
     };
   },
   components: {
-    SimilarMovies,
-    Cast
+    Similars,
+    MovieDetailTitle,
+    CastList,
+    Videos
   },
   computed: {
     similarGroup() {
-      let results = this.movie.similar.results;
       let similarGroup = [];
+
+      if (!this.movie.similar) return similarGroup;
+
+      let results = this.movie.similar.results;
+
       while (results.length) {
         similarGroup.push(results.splice(0, 3));
       }
       return similarGroup;
     }
   },
-  created() {
-    this.getMovie(this.$route.params.id);
-  },
+  created() {},
   methods: {
     async getMovie(id) {
-      console.log(id);
       await this.axios
         .get(`https://api.themoviedb.org/3/movie/${id}`, {
           params: {
             api_key: "6c78209662b809b81596ac7af717a7f7",
             language: "zh-TW",
             append_to_response:
-              "keywords,videos,changes,credits,images,lists,releases,reviews,similar,translations"
+              "keywords,credits,images,lists,releases,reviews,similar,translations"
           }
         })
         .then(res => {
           this.movie = res.data;
           console.log(res.data);
+        });
+    },
+    async getVideo(id) {
+      await this.axios
+        .get(`https://api.themoviedb.org/3/movie/${id}/videos`, {
+          params: {
+            api_key: "6c78209662b809b81596ac7af717a7f7"
+          }
+        })
+        .then(res => {
+          this.videos = res.data.results.filter(
+            video => video.site === "YouTube"
+          );
+          console.log(res.data.results);
         });
     }
   }

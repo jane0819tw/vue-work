@@ -1,9 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
 import Home from '../views/Home.vue'
 import FindMovie from '../views/FindMovie.vue'
+import FindTV from '../views/FindTV.vue'
+
 import MovieDetail from '../views/MovieDetail.vue'
+import TVDetail from '../views/TVDetail.vue'
+
 import PersonPage from '../views/PersonPage.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -30,8 +36,22 @@ const routes = [
   },
   {
     path: '/movies',
-    name: 'FindPage',
+    name: 'FindMoviePage',
     component: FindMovie
+  },
+  {
+    path: '/tvs/:id/:title',
+    name: 'TVDetail',
+    component: TVDetail,
+    meta: {
+      title: '電視劇詳細內容'
+    },
+    props: true
+  },
+  {
+    path: '/tvs',
+    name: 'FindTVPage',
+    component: FindTV,
   },
   {
     path: '/person/:id/:name',

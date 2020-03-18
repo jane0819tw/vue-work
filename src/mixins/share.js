@@ -13,6 +13,10 @@ export const share = {
     },
     getYear(date) {
       return date.split("-")[0]
+    },
+    toNewPage(url) {
+      console.log(url)
+      window.open(url, "_blank");
     }
   }
 }

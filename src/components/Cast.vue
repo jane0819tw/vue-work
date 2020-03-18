@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-card.cast(class="white--text d-flex " color="transparent" flat :to="`/person/${cast.id}/${cast.name}`")
+  v-card.cast(v-if="cast" class="white--text d-flex " color="transparent" flat :to="`/person/${cast.id}/${cast.name}`")
     .cast-img(:style="[genderClass(cast.gender),bgcImg(cast.profile_path)]")
     hr(class="white--text white")
     v-card-title {{cast.character}}

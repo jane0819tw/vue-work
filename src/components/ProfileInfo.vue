@@ -15,11 +15,13 @@ div
         v-list-item-icon
           v-icon mdi-home-map-marker
         v-list-item-content {{personInfo.place_of_birth}}
-
-  .social_group
-    v-icon(:href="social.value" target="__blank"
+  hr
+  v-row.social_group
+    v-icon.ma-3(@click="toNewPage(social.value)" target="__blank"
     v-if="personInfo.external_ids[social.name]" 
-    v-for="social in socials_mdi") {{social.icon}}
+    v-for="social in socials_mdi"
+    :key="social.name"
+    ) {{social.icon}}
         
 </template>
 <script>
@@ -43,6 +45,9 @@ export default {
         : year - this.getYear(this.personInfo.birthday);
     },
     socials_mdi() {
+      if (!this.personInfo.external_ids) {
+        return [];
+      }
       return [
         {
           name: "instagram_id",
@@ -56,7 +61,7 @@ export default {
         },
         {
           name: "twitter_id",
-          icon: "twitter",
+          icon: "mdi-twitter",
           value: `https://twitter.com/${this.personInfo.external_ids.twitter_id}`
         },
         {

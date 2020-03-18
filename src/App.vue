@@ -1,7 +1,6 @@
 <template lang="pug">
   v-app
     Navbar
-    
     router-view(:key="$route.path")
 </template>
 

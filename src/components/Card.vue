@@ -1,7 +1,7 @@
 <template lang="pug">
   v-hover
     template(v-slot="{hover}")
-      v-card.movie(:elevation="hover? 5:1" :to="{ name: 'MovieDetail', params: { title: movie.title,id:movie.id }}")
+      v-card.movie(:elevation="hover? 5:1" :to="toDetailPage(movie)")
         v-img.poster_img(v-if="movie.poster_path" :src="getImageUrl(movie.poster_path)" width="185")
         .dark(v-else)
         .content 
@@ -9,14 +9,14 @@
           v-row(align="center")
             v-progress-circular.popular(:value="shapePopularValue(movie.popularity)" :size="40" :width="6" :color="getPopularColor(shapePopularValue(movie.popularity))" :rotate="0") {{shapePopularPercent(movie.popularity)}}
             .titles
-              v-card-title {{movie.title}}
-              v-card-subtitle {{movie.original_title}}
+              v-card-title {{movie.title || movie.name}}
+              v-card-subtitle {{movie.original_title || movie.original_name}}
           .date(v-if="movie.release_date")
             v-icon mdi-calendar-range
             v-card-text {{shapeDate(movie.release_date)}}
           v-card-text {{shapeDescription(movie.overview)}}
           .genres
-            v-btn.genre(v-for="genreID in movie.genre_ids" small :key="genreID") {{getGenreName(genreID)}}
+            v-btn.genre(v-if="getGenreName(genreID)" v-for="genreID in movie.genre_ids" small :key="genreID") {{getGenreName(genreID)}}
 
 </template>
 <script>
@@ -50,9 +50,16 @@ export default {
     }
   },
   methods: {
+    toDetailPage(media) {
+      return {
+        name: media.title ? "MovieDetail" : "TVDetail",
+        params: { title: media.title || media.name, id: media.id }
+      };
+    },
     getGenreName(id) {
       //console.log(this.genres);
-      return this.genres.find(genre => genre.id == id).name;
+      let genre = this.genres.find(genre => genre.id == id);
+      return genre ? genre.name : "";
     },
     shapeDescription(content) {
       return content.length > 100 ? `${content.slice(0, 100)}...` : content;
