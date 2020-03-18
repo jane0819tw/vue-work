@@ -38,17 +38,15 @@ export default {
   },
   methods: {
     async search() {
-      this.args = {};
-      this.args.with_genres = this.selectGenre
-        ? this.selectGenre.join("||")
-        : "";
-      this.args.sort_by = this.selectSort;
-      await this.getKeywords();
-
-      console.log(this.args);
-
+      this.args = {
+        with_genres: this.selectGenre ? this.selectGenre.join("||") : "",
+        sort_by: this.selectSort
+      };
+      if (this.keyword) {
+        await this.getKeywords();
+      }
       // 把結果傳回去搜尋
-      this.$emit("getNewParams", this.args);
+      await this.$emit("getNewParams", this.args);
     },
 
     async getKeywords() {

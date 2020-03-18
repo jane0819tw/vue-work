@@ -11,9 +11,9 @@
             .titles
               v-card-title {{movie.title || movie.name}}
               v-card-subtitle {{movie.original_title || movie.original_name}}
-          .date(v-if="movie.release_date")
+          .date
             v-icon mdi-calendar-range
-            v-card-text {{shapeDate(movie.release_date)}}
+            v-card-text {{shapeDate(movie.release_date|| movie.first_air_date)}}
           v-card-text {{shapeDescription(movie.overview)}}
           .genres
             v-btn.genre(v-if="getGenreName(genreID)" v-for="genreID in movie.genre_ids" small :key="genreID") {{getGenreName(genreID)}}
