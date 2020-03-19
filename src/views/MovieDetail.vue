@@ -3,8 +3,8 @@
       v-sheet.banner-bgc(v-if="movie.backdrop_path" :style="bgcImg(movie.backdrop_path)")
       v-sheet.banner-bgc(v-else color="rgba(0,0,0,0.9)")
       v-row.banner-row
-        .banner-img
-          v-img(:src="getImageUrl(movie.poster_path)" width="80%")
+        .banner-info
+          v-img(:src="getImageUrl(movie.poster_path,185,'media')" width="80%")
           .genres
             v-chip(class="ma-2" label)(v-for="genre in movie.genres" big :key="genre.id") 
               v-icon mdi-label
@@ -13,12 +13,15 @@
             v-chip(class="ma-2" color="secondary" v-for="keyword in movie.keywords.keywords" big :key="keyword.id")
               v-icon(left) mdi-sword
               span {{keyword.name.toUpperCase()}}
-
+        
         .banner-content(class="white--text")
           MovieDetailTitle(:movie="movie")
           Videos(:videos="videos")
           v-card-subtitle.display-1(v-if="movie.overview" class="white--text") 大意
           p {{movie.overview}}
+          //- v-img(src="@/assets/person.png")
+          //- v-img(:src="tryImg")
+          //- v-img(:src= "require('../assets/person.png')")
           CastList(:media="movie")
           Similars(:similarGroup="similarGroup")
           
@@ -117,9 +120,10 @@ export default {
 .banner-row
   max-width: 80%
 
-.banner-img
+.banner-info
   flex: 1
   margin: 1em
+  min-height: 100vh
 
 .banner-content
   flex: 2

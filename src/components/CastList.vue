@@ -1,8 +1,8 @@
 <template lang="pug">
-  div
-    v-card-subtitle.display-1(v-if="media.credits && media.credits.cast.length" class="white--text") 演員表
+  div(v-if="media.credits && media.credits.cast.length" )
+    v-card-subtitle.display-1(class="white--text") 演員表
     v-row(v-if="media.credits")
-      v-col(cols="3" v-for="cast in media.credits.cast" :key="cast.id" v-if="cast.profile_path")
+      v-col(cols="3" v-for="cast in media.credits.cast" :key="cast.id" )
         Cast(:cast="cast")
 </template>
 <script>

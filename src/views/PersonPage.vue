@@ -1,9 +1,8 @@
 <template lang="pug">
   v-card.d-flex.pa-5(v-if="person")
     .person-img.flex-grow-0.ma-4
-      v-img(v-if="person.profile_path" lazy-src :src="getImageUrl(person.profile_path)")
+      v-img(lazy-src :src="getImageUrl(person.profile_path)")
       ProfileInfo(:personInfo="person")
-      
     .person-content.ma-5
       v-card-title {{person.name}}
       v-card-text {{person.biography}}
@@ -40,7 +39,7 @@ export default {
   },
   data() {
     return {
-      person: {},
+      person: null,
       media_type: "movie"
     };
   },

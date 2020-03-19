@@ -1,15 +1,15 @@
 <template lang="pug">
   v-row
     v-col(cols=4)
-      v-select(v-model="selectGenre" chips multiple label="選擇類別" :items="shapeGenres")
+      v-select(dense outlined v-model="selectGenre" chips multiple label="選擇類別" :items="shapeGenres")
         template(v-slot:selection="data")
           v-chip(close 
           @click:close="data.parent.selectItem(data.item)" 
           :key="JSON.stringify(data.item)") {{data.item.text}}
     v-col(cols=4)
-      v-select(v-model="selectSort" label="排列依序" :items="sorting")
+      v-select(dense outlined v-model="selectSort" label="排列依序" :items="sorting")
     v-col(cols=3)
-      v-text-field(v-model="keyword" label="輸入英文關鍵字")
+      v-text-field(dense outlined v-model="keyword" label="輸入英文關鍵字")
     v-col(cols=1)
       v-icon(x-large @click="search") mdi-magnify
 </template>
@@ -17,7 +17,10 @@
 export default {
   data() {
     return {
-      selectSort: null,
+      selectSort: {
+        text: "依照熱門程度排序(熱門到冷門)",
+        value: "popularity.desc"
+      },
       selectGenre: null,
       keyword: "",
       args: {},
