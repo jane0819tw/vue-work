@@ -1,37 +1,12 @@
 <template lang="pug">
-    v-card.banner(v-if="movie")
-      v-sheet.banner-bgc(v-if="movie.backdrop_path" :style="bgcImg(movie.backdrop_path)" )
-      v-sheet.banner-bgc(v-else color="rgba(0,0,0,0.9)" )
-      v-row.banner-row
-        .banner-info
-          v-img(:src="getImageUrl(movie.poster_path,185,'media')" width="80%")
-          .genres
-            v-chip(class="ma-2" label)(v-for="genre in movie.genres" big :key="genre.id") 
-              v-icon mdi-label
-              span {{genre.name}}
-          .keywords
-            v-chip(class="ma-2" color="secondary" v-for="keyword in movie.keywords.results" big :key="keyword.id")
-              v-icon(left) mdi-sword
-              span {{keyword.name.toUpperCase()}}
-          v-chip.ma-2(color="yellow" v-if="movie.origin_country.length")
-            span {{movie.origin_country[0]}}
-        .banner-content(class="white--text")
-          TVDetailTitle(:tv="movie")
-          Videos(:videos="movie.videos.results")
-          v-card-subtitle.display-1(v-if="movie.overview" class="white--text") 大意
-          p {{movie.overview}}
-          CastList(:media="movie")
-          Seasons(v-if="movie.seasons.length" :seasons="movie.seasons")
-          Similars(:similarGroup="similarGroup")
-          
-
-</template>
+MediaDetailLayout(v-if="movie" :media="movie")
+  TVDetailTitle(slot="title" :tv="movie")
+  Seasons(slot="seasons" v-if="movie.seasons.length" :seasons="movie.seasons")
+    </template>
 <script>
+import MediaDetailLayout from "@/layouts/MediaDetailLayout.vue";
 import TVDetailTitle from "@/components/TVDetailTitle.vue";
-import Videos from "@/components/Videos.vue";
-import CastList from "@/components/CastList.vue";
-import Similars from "@/components/Similars.vue";
-import Seasons from "@/components/Seasons.vue";
+import Seasons from "@/components/TheDetailPage/Seasons.vue";
 export default {
   data() {
     return {
@@ -39,21 +14,9 @@ export default {
     };
   },
   components: {
+    MediaDetailLayout,
     TVDetailTitle,
-    Similars,
-    CastList,
-    Videos,
     Seasons
-  },
-  computed: {
-    similarGroup() {
-      let results = this.movie.similar.results;
-      let similarGroup = [];
-      while (results.length) {
-        similarGroup.push(results.splice(0, 3));
-      }
-      return similarGroup;
-    }
   },
 
   async mounted() {
@@ -79,6 +42,7 @@ export default {
   }
 };
 </script>
+
 <style lang="sass">
 .banner *
   filter: brightness(1)
@@ -92,10 +56,6 @@ export default {
 
 .banner-row
   max-width: 80%
-
-.banner-info
-  flex: 1
-  margin: 1em
 
 .banner-content
   flex: 2

@@ -2,8 +2,7 @@
   v-hover
     template(v-slot="{hover}")
       v-card.movie(:elevation="hover? 5:1" :to="toDetailPage(movie)")
-        v-img.poster_img(v-if="movie.poster_path" :src="getImageUrl(movie.poster_path)" width="185")
-        .dark(v-else)
+        v-img.poster_img(:src="getImageUrl(movie.poster_path,185,'media')")
         .content 
           //- size: 半徑; width：寬度; rotate: 起點角度; value: 0~100 圓環比例
           v-row(align="center")

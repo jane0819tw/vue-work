@@ -1,5 +1,6 @@
 <template lang="pug">
   v-row
+    v-col(v-if="$store.state.searchError") {{$store.state.searchError}}
     v-col(cols="6" v-for="media in medias" :key="media.id")
       Card(:movie="media",:genres="genres")
     slot

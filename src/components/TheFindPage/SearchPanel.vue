@@ -12,8 +12,10 @@
       v-text-field(dense outlined v-model="keyword" label="輸入英文關鍵字")
     v-col(cols=1)
       v-icon(x-large @click="search") mdi-magnify
+    
 </template>
 <script>
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -40,33 +42,47 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(["updateSearchError"]),
     async search() {
       this.args = {
         with_genres: this.selectGenre ? this.selectGenre.join("||") : "",
         sort_by: this.selectSort
       };
+      console.log("searching......");
+      this.keyword = this.keyword.trim().toLowerCase();
+      this.$emit("getKeyword", this.keyword);
+
+      // 有keywords 去搜尋
       if (this.keyword) {
         await this.getKeywords();
       }
+      console.log("no input keyword");
       // 把結果傳回去搜尋
+      console.log(this.args);
       await this.$emit("getNewParams", this.args);
     },
 
     async getKeywords() {
+      console.log("get keywords");
       await this.axios
         .get("https://api.themoviedb.org/3/search/keyword", {
           params: {
             api_key: "6c78209662b809b81596ac7af717a7f7",
-            query: this.keyword.toLowerCase()
+            query: this.keyword
           }
         })
         .then(res => {
           // keywords list
+          console.log("keywords", res.data.results);
           let keyword_results = res.data.results;
-          if (keyword_results.length) {
+          if (!keyword_results.length) {
+            this.args.with_keywords = { type: "no", value: this.keyword };
+            this.updateSearchError(`無${this.keyword}相關關鍵字，請更換關鍵字`);
+          } else {
             this.args.with_keywords = keyword_results
               .map(keyword => keyword.id)
               .join("||");
+            this.updateSearchError("");
           }
         });
     }

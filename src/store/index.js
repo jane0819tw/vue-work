@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     testStore: [2, 3, 4],
-    count: 1
+    count: 1,
+    searchError: ''
   },
   mutations: {
     addCount(state, obj) {
@@ -15,6 +16,9 @@ export default new Vuex.Store({
       // }, 1000)
       state.count += obj.num
       // state.count += 20
+    },
+    updateSearchError(state, message) {
+      state.searchError = message
     }
   },
   actions: {

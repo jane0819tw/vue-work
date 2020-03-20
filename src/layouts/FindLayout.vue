@@ -5,13 +5,13 @@
       v-btn(@click="addCount({num:2})") commit count 
       v-btn(@click="update({num:5} )") actions count 
       v-btn(@click="update2({num:100} )") actions2 count 
-      SearchPanel(:shapeGenres="shapeGenres" @getNewParams="getNewParams")
+      SearchPanel(:shapeGenres="shapeGenres" @getNewParams="getNewParams",@getKeyword="getKeyword")
       MediaList(:medias="medias",:genres="genres")
         v-pagination(@input="getMedias" circle total-visible="7" v-model="page" :length="total_pages")
 </template>
 <script>
-import MediaList from "@/components/MediaList.vue";
-import SearchPanel from "@/components/SearchPanel.vue";
+import MediaList from "@/components/TheFindPage/MediaList.vue";
+import SearchPanel from "@/components/TheFindPage/SearchPanel.vue";
 
 import { mapState, mapMutations, mapActions } from "vuex"; //
 export default {
@@ -34,7 +34,9 @@ export default {
         sort_by: "popularity.desc",
         include_video: false,
         with_original_language: "th"
-      }
+      },
+      args: {},
+      keyword: ""
     };
   },
   computed: {
@@ -58,15 +60,26 @@ export default {
   async mounted() {
     await this.getMedias(1);
     await this.getGenres();
+    this.updateSearchError("");
     await console.log("mounteddddd");
   },
   methods: {
-    ...mapMutations(["addCount"]),
+    ...mapMutations(["addCount", "updateSearchError"]),
     ...mapActions(["update", "update2"]),
-    getNewParams(args) {
-      console.log("find movie page get");
-      this.getMedias(1, args);
+
+    getKeyword(value) {
+      this.keyword = value;
     },
+
+    getNewParams(args) {
+      Object.assign(this.args, args);
+      if (this.args.with_keywords && this.args.with_keywords.type) {
+        this.medias = [];
+      } else {
+        this.getMedias(1, this.args);
+      }
+    },
+
     async getGenres() {
       await this.axios
         .get(`https://api.themoviedb.org/3/genre/${this.mediaType}/list`, {
@@ -80,13 +93,12 @@ export default {
           this.genres = res.data.genres;
         });
     },
-    //
+
     async getMedias(page, args = {}) {
       let new_arg = {};
       Object.assign(new_arg, this.def_params);
       Object.assign(new_arg, { page: page });
       Object.assign(new_arg, args);
-      console.log(new_arg);
 
       await this.axios
         .get(`https://api.themoviedb.org/3/discover/${this.mediaType}/`, {
@@ -99,6 +111,11 @@ export default {
           // -------
           if (!this.popularTop) {
             this.popularTop = this.medias[0].popularity;
+          }
+          if (!this.medias.length) {
+            this.updateSearchError(
+              `在類別中查詢關鍵字${this.keyword}無結果，更換類別或是關鍵字`
+            );
           }
         });
     }

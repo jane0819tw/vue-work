@@ -19,9 +19,6 @@ export const share = {
       return {
         backgroundPosition: "center",
         backgroundSize: "cover",
-        // background: 'url(../../assets/person.png)',
-        // background: 'url("require('@/assets/person.png')")',
-        // backgroundImage: 'require("../assets/person.png")',
         backgroundImage: `url(${url ? this.getImageUrl(url, 1280) : bgcUrl})`
         // backgroundImage: `url(${url ? this.getImageUrl(url, 1280) : 'require("@/assets/person.png")'})`
       }
