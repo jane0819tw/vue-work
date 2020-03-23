@@ -5,6 +5,7 @@
       v-btn(@click="addCount({num:2})") commit count 
       v-btn(@click="update({num:5} )") actions count 
       v-btn(@click="update2({num:100} )") actions2 count 
+      SearchMap
       SearchPanel(:shapeGenres="shapeGenres" @getNewParams="getNewParams",@getKeyword="getKeyword")
       MediaList(:medias="medias",:genres="genres")
         v-pagination(@input="getMedias" circle total-visible="7" v-model="page" :length="total_pages")
@@ -12,7 +13,7 @@
 <script>
 import MediaList from "@/components/TheFindPage/MediaList.vue";
 import SearchPanel from "@/components/TheFindPage/SearchPanel.vue";
-
+import SearchMap from "@/components/TheFindPage/SearchMap.vue";
 import { mapState, mapMutations, mapActions } from "vuex"; //
 export default {
   props: {
@@ -55,7 +56,8 @@ export default {
   },
   components: {
     MediaList,
-    SearchPanel
+    SearchPanel,
+    SearchMap
   },
   async mounted() {
     await this.getMedias(1);

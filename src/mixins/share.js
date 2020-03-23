@@ -25,7 +25,7 @@ export const share = {
 
     },
     getYear(date) {
-      return date.split("-")[0]
+      return date ? date.split("-")[0] : ''
     },
     toNewPage(url) {
       console.log(url)

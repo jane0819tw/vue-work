@@ -15,7 +15,9 @@
             v-card-text {{shapeDate(movie.release_date|| movie.first_air_date)}}
           v-card-text {{shapeDescription(movie.overview)}}
           .genres
-            v-btn.genre(v-if="getGenreName(genreID)" v-for="genreID in movie.genre_ids" small :key="genreID") {{getGenreName(genreID)}}
+            v-chip.ma-2(label v-if="getGenreName(genreID)" v-for="genreID in movie.genre_ids" big :key="genreID")
+              v-icon(left) mdi-label
+              span {{getGenreName(genreID)}}
 
 </template>
 <script>

@@ -1,7 +1,8 @@
 <template lang="pug">
   v-app
     Navbar
-    router-view(:key="$route.path")
+    transition(name="page" mode="out-in")
+      router-view(:key="$route.path")
 </template>
 
 <script>
@@ -20,3 +21,9 @@ export default {
   })
 };
 </script>
+<style lang="sass">
+.page-enter-active, .page-leave-active
+  transition: opacity .2s
+.page-enter, .page-leave-to
+  opacity: 0
+</style>
