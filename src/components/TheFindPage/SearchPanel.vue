@@ -43,22 +43,23 @@ export default {
   },
   methods: {
     ...mapMutations(["updateSearchError"]),
-    async search() {
-      this.args = {
-        with_genres: this.selectGenre ? this.selectGenre.join("||") : "",
-        sort_by: this.selectSort
-      };
-      console.log("searching......");
+
+    async dealKeywords() {
       this.keyword = this.keyword.trim().toLowerCase();
       this.$emit("getKeyword", this.keyword);
-
       // 有keywords 去搜尋
       if (this.keyword) {
         await this.getKeywords();
       }
-      console.log("no input keyword");
-      // 把結果傳回去搜尋
+    },
+
+    async search() {
+      this.args = {
+        with_genres: this.selectGenre ? this.selectGenre.join("||") : "",
+        sort_by: this.selectSort.value
+      };
       console.log(this.args);
+      await this.dealKeywords();
       await this.$emit("getNewParams", this.args);
     },
 

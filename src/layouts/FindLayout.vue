@@ -5,7 +5,7 @@
       v-btn(@click="addCount({num:2})") commit count 
       v-btn(@click="update({num:5} )") actions count 
       v-btn(@click="update2({num:100} )") actions2 count 
-      SearchMap
+      SearchMap(@languages="deliverLanguages")
       SearchPanel(:shapeGenres="shapeGenres" @getNewParams="getNewParams",@getKeyword="getKeyword")
       MediaList(:medias="medias",:genres="genres")
         v-pagination(@input="getMedias" circle total-visible="7" v-model="page" :length="total_pages")
@@ -33,11 +33,10 @@ export default {
         api_key: "6c78209662b809b81596ac7af717a7f7",
         language: "zh",
         sort_by: "popularity.desc",
-        include_video: false,
-        with_original_language: "th"
+        include_video: false
       },
-      args: {},
-      keyword: ""
+      keyword: "",
+      languages: "cn"
     };
   },
   computed: {
@@ -74,12 +73,18 @@ export default {
     },
 
     getNewParams(args) {
-      Object.assign(this.args, args);
-      if (this.args.with_keywords && this.args.with_keywords.type) {
+      console.log("layout get", args);
+      if (args.with_keywords && args.with_keywords.type) {
+        console.log("have keyword");
         this.medias = [];
       } else {
-        this.getMedias(1, this.args);
+        this.getMedias(1, args);
       }
+    },
+
+    deliverLanguages(languages) {
+      this.languages = languages.map(language => language.iso639_1).join("||");
+      console.log("deliver", this.languages);
     },
 
     async getGenres() {
@@ -99,7 +104,10 @@ export default {
     async getMedias(page, args = {}) {
       let new_arg = {};
       Object.assign(new_arg, this.def_params);
-      Object.assign(new_arg, { page: page });
+      Object.assign(new_arg, {
+        page: page,
+        with_original_language: this.languages
+      });
       Object.assign(new_arg, args);
 
       await this.axios
@@ -119,6 +127,7 @@ export default {
               `在類別中查詢關鍵字${this.keyword}無結果，更換類別或是關鍵字`
             );
           }
+          console.log(this.medias);
         });
     }
   }
