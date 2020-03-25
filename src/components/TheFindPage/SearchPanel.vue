@@ -1,4 +1,6 @@
 <template lang="pug">
+v-container
+  SearchMap(@languages="deliverLanguages")
   v-row
     v-col(cols=4)
       v-select(dense outlined v-model="selectGenre" chips multiple label="選擇類別" :items="shapeGenres")
@@ -11,10 +13,12 @@
     v-col(cols=3)
       v-text-field(dense outlined v-model="keyword" label="輸入英文關鍵字")
     v-col(cols=1)
-      v-icon(x-large @click="search") mdi-magnify
+      v-icon(large @click="search") mdi-magnify
+    
     
 </template>
 <script>
+import SearchMap from "@/components/TheFindPage/SearchMap.vue";
 import { mapMutations } from "vuex";
 export default {
   data() {
@@ -27,10 +31,10 @@ export default {
       keyword: "",
       args: {},
       sorting: [
-        { text: "依照熱門程度排序(冷門到熱門)", value: "popularity.asc" },
         { text: "依照熱門程度排序(熱門到冷門)", value: "popularity.desc" },
-        { text: "依照時間排序(遠到近)", value: "release_date.asc" },
-        { text: "依照時間排序(近到遠)", value: "release_date.desc" }
+        { text: "依照熱門程度排序(冷門到熱門)", value: "popularity.asc" },
+        { text: "依照時間排序(近到遠)", value: "release_date.desc" },
+        { text: "依照時間排序(遠到近)", value: "release_date.asc" }
       ]
     };
   },
@@ -40,6 +44,9 @@ export default {
       type: Array,
       required: true
     }
+  },
+  components: {
+    SearchMap
   },
   methods: {
     ...mapMutations(["updateSearchError"]),

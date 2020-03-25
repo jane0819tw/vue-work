@@ -66,6 +66,7 @@ export default {
       return content.length > 100 ? `${content.slice(0, 100)}...` : content;
     },
     shapeDate(date) {
+      if (!date) return "";
       let d = date.split("-");
       return `${this.getMonth(d[1])} ${d[2]},${d[0]}`;
     },
