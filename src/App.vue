@@ -2,7 +2,8 @@
   v-app
     Navbar
     transition(name="page" mode="out-in")
-      router-view(:key="$route.path")
+      keep-alive
+        router-view(:key="$route.path")
 </template>
 
 <script>

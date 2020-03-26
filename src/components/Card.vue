@@ -15,7 +15,7 @@
             v-card-text {{shapeDate(movie.release_date|| movie.first_air_date)}}
           v-card-text {{shapeDescription(movie.overview)}}
           .genres
-            v-chip.ma-2(label v-if="getGenreName(genreID)" v-for="genreID in movie.genre_ids" big :key="genreID")
+            v-chip.ma-2(color="success" label v-if="getGenreName(genreID)" v-for="genreID in movie.genre_ids" big :key="genreID")
               v-icon(left) mdi-label
               span {{getGenreName(genreID)}}
 
@@ -54,7 +54,10 @@ export default {
     toDetailPage(media) {
       return {
         name: media.title ? "MovieDetail" : "TVDetail",
-        params: { title: media.title || media.name, id: media.id }
+        params: {
+          title: media.original_title || media.original_name,
+          id: media.id
+        }
       };
     },
     getGenreName(id) {
@@ -78,9 +81,9 @@ export default {
     },
     getPopularColor(value) {
       if (value > 50) {
-        return value > 75 ? "red" : "yellow";
+        return value > 75 ? "secondary" : "yellow";
       } else {
-        return value > 50 ? "green" : "blue";
+        return value > 50 ? "green" : "primary";
       }
     },
     getMonth(month) {

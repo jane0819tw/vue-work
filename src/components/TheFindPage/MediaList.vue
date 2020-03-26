@@ -2,8 +2,8 @@
   v-container
     v-row
       v-col(v-if="$store.state.searchError") {{$store.state.searchError}}
-    v-row
-      v-col(cols="6" v-for="media in medias" :key="media.id")
+    v-row(v-if="medias.length")
+      v-col(v-if="media.id" cols="6" v-for="media in medias" :key="media.id")
         Card(:movie="media",:genres="genres")
       slot
 </template>

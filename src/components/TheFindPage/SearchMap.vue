@@ -5,7 +5,7 @@
         g.world(v-if="countries")
           path.country(v-for="country in countries" :key="country.id" @click="getLanguage(country.id)")
     v-col
-      v-chip.ma-2(v-if="language.open" :key="language.id" v-for="language in languages" @click:close="language.open = false" close) {{language.name}}  {{language.nativeName}}
+      v-chip.ma-2(color="secondary" v-if="language.open" :key="language.id" v-for="language in languages" @click:close="emitLanguages(language)" close) {{language.name}}  {{language.nativeName}}
         
 </template>
 <script>
@@ -31,9 +31,7 @@ export default {
       return this.width / 2;
     },
     selectLanguages() {
-      let selectLanguages = this.languages.filter(language => language.open);
-      this.$emit("languages", selectLanguages);
-      return selectLanguages;
+      return this.languages.filter(language => language.open);
     }
   },
   methods: {
@@ -58,8 +56,6 @@ export default {
         .translate([this.width / 2, this.height / 2])
         .center([0, 45])
         .scale(160);
-
-      console.log(this.projection);
 
       // path
       this.path = d3.geoPath().projection(this.projection);
@@ -98,6 +94,12 @@ export default {
         });
       });
     },
+    emitLanguages(language) {
+      if (language) {
+        language.open = false;
+      }
+      this.$emit("languages", this.selectLanguages);
+    },
     findcountry(numericCode) {
       return this.countryList.find(
         country => country.numericCode === numericCode
@@ -114,8 +116,7 @@ export default {
             language.open = true;
             return language;
           });
-          console.log(this.languages);
-          this.$emit("languages", this.selectLanguages);
+          this.emitLanguages();
         });
     },
     setToolTip() {
@@ -124,9 +125,9 @@ export default {
         .attr("class", "d3-tip")
         .offset([-14, 0])
         .html(d => {
-          console.log(d.id);
+          //- console.log(d.id);
           let country = this.findcountry(d.id);
-          console.log(country);
+          //- console.log(country);
           return `${
             country.flag
               ? `<img class="flag-img" src="${country.flag}"></img>`

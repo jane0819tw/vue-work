@@ -9,9 +9,15 @@ export const share = {
       }
     },
     getImageUrl(url, width = 185, type) {
-      if (!url) return this.assetsUrl(type)
+      if (!url) {
+        console.log(width)
+        return this.assetsUrl(type)
+      }
 
-      return `http://image.tmdb.org/t/p/w${width}/${url}`;
+      if (url.indexOf('/') === -1) {
+        url = '/' + url
+      }
+      return `http://image.tmdb.org/t/p/original${url}`;
     },
 
     bgcImg(url, bgcUrl = 'https://i.imgur.com/Dxczjxd.png') {

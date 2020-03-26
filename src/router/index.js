@@ -8,6 +8,8 @@ import FindTV from '../views/FindTV.vue'
 import MovieDetail from '../views/MovieDetail.vue'
 import TVDetail from '../views/TVDetail.vue'
 
+import NotFound from '../views/NotFound.vue'
+
 import PersonPage from '../views/PersonPage.vue'
 
 Vue.use(VueRouter)
@@ -32,7 +34,8 @@ const routes = [
     component: MovieDetail,
     meta: {
       title: '電影詳細內容'
-    }, props: true
+    },
+    props: true
   },
   {
     path: '/movies',
@@ -57,7 +60,14 @@ const routes = [
     path: '/person/:id/:name',
     name: 'PersonDetail',
     component: PersonPage
-  }
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: NotFound
+  },
+  // 404 not found page
+  { path: '*', redirect: '404' }
 ]
 
 const router = new VueRouter({

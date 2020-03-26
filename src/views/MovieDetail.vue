@@ -38,6 +38,7 @@ export default {
         .then(res => {
           this.movie = res.data;
           console.log(res.data);
+          console.log("checkRouted");
         });
     }
   }
