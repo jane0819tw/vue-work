@@ -148,8 +148,8 @@ export default {
 </script>
 <style lang="sass">
 #svg
-  border: solid 1px
-  background-color: rgba(0,0,0,0.9)
+  //border: solid 1px
+  background-color: rgba(0,0,0,0.8)
 
 path
   cursor: pointer
